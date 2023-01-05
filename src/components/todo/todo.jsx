@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import List from "../list/list";
 
 class Todo extends Component {
   constructor(props) {
@@ -17,6 +18,13 @@ class Todo extends Component {
     todos.push(task);
     // Mettre a jour l'etat du tableau et vider le champ de saisie
     this.setState({ todos: todos, task: "" });
+  };
+
+  handleDelete = (id) => {
+    // supprimer l'element de la liste par son id
+    let { todos } = this.state;
+    todos.splice(id, 1);
+    this.setState({ todos: todos });
   };
 
   render() {
@@ -43,12 +51,7 @@ class Todo extends Component {
         <h3 className="mt-3 p-2 bg-secondary text-white fs-3 rounded">
           Task List
         </h3>
-        <div>{this.state.task}</div>
-        <ul className="task-list">
-          {todos.map((item, index) => {
-            return <li key={index}>{item}</li>;
-          })}
-        </ul>
+        <List todoArray={todos} handleDelete={this.handleDelete} />
       </div>
     );
   }
