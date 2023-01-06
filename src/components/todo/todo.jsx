@@ -18,6 +18,8 @@ class Todo extends Component {
     todos.push(task);
     // Mettre a jour l'etat du tableau et vider le champ de saisie
     this.setState({ todos: todos, task: "" });
+    // stockage dans le localsotage
+    sessionStorage.setItem("todolist", JSON.stringify(todos));
   };
 
   handleDelete = (id) => {
@@ -25,7 +27,40 @@ class Todo extends Component {
     let { todos } = this.state;
     todos.splice(id, 1);
     this.setState({ todos: todos });
+    // stockage dans le localsotage
+    sessionStorage.setItem("todolist", JSON.stringify(todos));
   };
+
+  // composant qui s'execute apres le montage
+  componentDidMount() {
+    let list = sessionStorage.getItem("todolist")
+      ? sessionStorage.getItem("todolist")
+      : [];
+    this.setState({ todos: JSON.parse(list) });
+  }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    console.log("state", this.state, prevState);
+    if (this.state.todos.length > prevState.todos.length) {
+      return true;
+    }
+    return false;
+  }
+
+  // composant qui s'execute a chaque mise a jour du state composant
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log(snapshot);
+    let data = sessionStorage.getItem("todolist")
+      ? sessionStorage.getItem("todolist")
+      : [];
+    if (prevState.todos !== JSON.parse(data)) {
+      console.log(prevState);
+    }
+  }
+
+  componentWillUnmount() {
+    console.log("clearing");
+  }
 
   render() {
     let { todos, task } = this.state;
